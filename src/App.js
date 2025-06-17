@@ -48,16 +48,10 @@ export default function App() {
           for (let k = 1; k <= 9; k++) {
             if (isSafe(board, i, j, k.toString())) {
               board[i][j] = k.toString();
-              setTimeout(() => {
-                handleCell(k.toString(), i, j);
-              }, 1000);
 
               if (solveSudoku(board)) return true;
               else {
                 board[i][j] = "";
-                setTimeout(() => {
-                  handleCell("", i, j);
-                }, 1000);
               }
             }
           }
@@ -70,23 +64,28 @@ export default function App() {
   }
 
   return (
-    <div className="main">
-      <Heading />
-      <Description />
-      <AllCells sudoku={sudokuArr} onCell={handleCell} />
-      <Result />
-      <Controls onReset={handleReset} onSolve={handleSolve} />
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+      <div className="bg-white p-6 rounded-xl shadow-xl w-fit">
+        <Heading />
+        <Description />
+        <AllCells sudoku={sudokuArr} onCell={handleCell} />
+        <Controls onReset={handleReset} onSolve={handleSolve} />
+      </div>
     </div>
   );
 }
 
 function Heading() {
-  return <h1>Sudoku Solver</h1>;
+  return (
+    <h1 className="text-center text-[36px] font-bold mb-2 text-blue-600">
+      Sudoku Solver
+    </h1>
+  );
 }
 
 function Description() {
   return (
-    <div className="description">
+    <div className="text-center text-[24px]">
       <p>Enter the known numbers and click the Solve button.</p>
     </div>
   );
@@ -94,7 +93,7 @@ function Description() {
 
 function AllCells({ sudoku, onCell }) {
   return (
-    <div className="allCells">
+    <div className="grid grid-cols-9 gap-1 w-fit mx-auto my-4">
       {sudoku.map((row, rowIndex) =>
         row.map((cell, colIndex) => {
           return (
@@ -112,18 +111,31 @@ function AllCells({ sudoku, onCell }) {
 }
 
 function Cell({ data, rowIndex, colIndex, onCell }) {
+  const isBoldRight = (colIndex + 1) % 3 === 0 && colIndex !== 8;
+  const isBoldBottom = (rowIndex + 1) % 3 === 0 && rowIndex !== 8;
+
   return (
     <input
+      className={`h-[45px] w-[45px] text-[20px] font-medium text-center border border-gray-400 focus:outline-blue-400
+        ${isBoldRight ? "border-r-4 border-r-gray-600" : ""}
+        ${isBoldBottom ? "border-b-4 border-b-gray-600" : ""}
+      `}
       type="text"
       value={data}
-      onChange={(e) => onCell(e.target.value, rowIndex, colIndex)}
+      maxLength="1"
+      onChange={(e) => {
+        const value = e.target.value;
+        if (value === "" || /^[1-9]$/.test(value)) {
+          onCell(value, rowIndex, colIndex);
+        }
+      }}
     />
   );
 }
 
 function Result() {
   return (
-    <div className="result">
+    <div className="text-center text-[24px]">
       <p>Result</p>
     </div>
   );
@@ -131,7 +143,7 @@ function Result() {
 
 function Controls({ onReset, onSolve }) {
   return (
-    <div className="controls">
+    <div className="flex justify-center gap-4 mt-4">
       <Button text="Solve" onClick={onSolve} />
       <Button text="Reset" onClick={onReset} />
     </div>
@@ -139,7 +151,14 @@ function Controls({ onReset, onSolve }) {
 }
 
 function Button({ text, onClick }) {
-  return <button onClick={onClick}>{text}</button>;
+  return (
+    <button
+      className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg transition duration-200 shadow-md"
+      onClick={onClick}
+    >
+      {text}
+    </button>
+  );
 }
 
 function isSafe(board, row, col, num) {

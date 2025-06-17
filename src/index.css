@@ -1,4 +1,8 @@
-* {
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* * {
   margin: 0;
   padding: 0;
 }
@@ -21,11 +25,11 @@ h1 {
 .allCells {
   display: grid;
   grid-template-columns: repeat(9, minmax(0, 1fr));
-  gap: 0.25rem; /* Tailwind's gap-1 = 4px */
+  gap: 0.25rem;
   width: fit-content;
   margin-left: auto;
   margin-right: auto;
-  margin-top: 1rem; /* my-4 = 1rem top and bottom */
+  margin-top: 1rem; 
   margin-bottom: 1rem;
 }
 input[type="text"] {
@@ -46,4 +50,4 @@ input[type="text"] {
 button {
   width: 50px;
   height: 30px;
-}
+} */
